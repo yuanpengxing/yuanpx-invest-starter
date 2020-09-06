@@ -1,3 +1,4 @@
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebElement;
 
@@ -7,28 +8,33 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        String stockCodePath = "D:\\StockData\\SelfSelectStock.txt";
-        String dataLoc = "D:\\StockData\\data\\";
-        String yearOfData = "2020";
-        String monthOfData = "09";
-        String dayOfData = "05";
-        String fullDataLoc = dataLoc + "/" + yearOfData + "/" + monthOfData + "/" + dayOfData;
-        File dataParentFile = new File(fullDataLoc);
+    public static void main(String[] args) throws IOException, ParseException {
+        Map<String, String> cmdLineParamsMap = CommandLineUtils.parserCommandLine(args);
+        if (!cmdLineParamsMap.containsKey("selfSelectStock") || !cmdLineParamsMap.containsKey("rootLocDataWriteTo")
+                || !cmdLineParamsMap.containsKey("dataYear") || !cmdLineParamsMap.containsKey("dataMonth")
+                || !cmdLineParamsMap.containsKey("dataDay")) {
+            throw new RuntimeException("usage example: java -jar yuanpx-invest-starter.jar " +
+                    "-s D:\\StockData\\SelfSelectStock.txt -l D:\\StockData\\data\\ " +
+                    "-y 2020 -m 10 -d 01");
+        }
+        String dirDataWriteTo = cmdLineParamsMap.get("rootLocDataWriteTo") + "/" + cmdLineParamsMap.get("dataYear") + "/"
+                + cmdLineParamsMap.get("dataMonth") + "/" + cmdLineParamsMap.get("dataDay");
+        File dataParentFile = new File(dirDataWriteTo);
         if (!dataParentFile.exists()) {
             dataParentFile.mkdirs();
         }
-        BufferedWriter logger = new BufferedWriter(new FileWriter(fullDataLoc + "/log.txt", true));
-        BufferedReader br = new BufferedReader(new FileReader(stockCodePath));
+        BufferedWriter logger = new BufferedWriter(new FileWriter(dirDataWriteTo + "/log.txt", true));
+        BufferedReader br = new BufferedReader(new FileReader(cmdLineParamsMap.get("selfSelectStock")));
         String line;
         while ((line = br.readLine()) != null) {
             String stockCode = line.trim();
             boolean isStockExist = false;
             String[] extensions = {"txt"};
-            for (File file : FileUtils.listFiles(new File(fullDataLoc), extensions, false)) {
+            for (File file : FileUtils.listFiles(new File(dirDataWriteTo), extensions, false)) {
                 if (file.getName().equals(stockCode + ".txt")) {
                     isStockExist = true;
                 }
@@ -38,7 +44,7 @@ public class Main {
                     logger.write("Stock " + stockCode + " task start " + new Date());
                     logger.newLine();
                     logger.flush();
-                    Main.startCollectData(stockCode, fullDataLoc + "/" + stockCode + ".txt", logger);
+                    Main.startCollectData(stockCode, dirDataWriteTo + "/" + stockCode + ".txt", logger);
                 } catch (Exception e) {
                     logger.write("Exception: 无数据");
                     logger.newLine();
