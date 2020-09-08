@@ -1,3 +1,4 @@
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
