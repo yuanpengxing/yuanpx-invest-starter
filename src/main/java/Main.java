@@ -63,18 +63,10 @@ public class Main {
                 DriverDataSource.getDriver().get("http://quote.eastmoney.com/f1.html?code=" + stockCode + "&market=2");
             }
             String lastRecordTable1 = WaitElement.xpath(ElementManager.lastRecordTable1).getText().trim();
-//            stockFile.write(WaitElement.xpath(ElementManager.table1).getText());
             stockFile.write(WaitElement.xpath(ElementManager.table1).getAttribute("innerHTML"));
-            stockFile.newLine();
-//            stockFile.write(WaitElement.xpath(ElementManager.table2).getText());
             stockFile.write(WaitElement.xpath(ElementManager.table2).getAttribute("innerHTML"));
-            stockFile.newLine();
-//            stockFile.write(WaitElement.xpath(ElementManager.table3).getText());
             stockFile.write(WaitElement.xpath(ElementManager.table3).getAttribute("innerHTML"));
-            stockFile.newLine();
-//            stockFile.write(WaitElement.xpath(ElementManager.table4).getText());
             stockFile.write(WaitElement.xpath(ElementManager.table4).getAttribute("innerHTML"));
-            stockFile.newLine();
 
             String totalPages = WaitElement.xpath(ElementManager.totalPages).getText();
             logFile.write(", TotalPages: " + totalPages);
@@ -100,24 +92,22 @@ public class Main {
                 if (i == Integer.parseInt(totalPages)) {
                     lastPageElementsList = WaitElement.getElements(ElementManager.everyDealRecord);
                     for (WebElement element : lastPageElementsList) {
-//                        stockFile.write(element.getText());
+                        stockFile.newLine();
+                        stockFile.write("    <tr>");
                         stockFile.write(element.getAttribute("innerHTML"));
+                        stockFile.write("</tr>");
                         stockFile.newLine();
                     }
                 } else {
                     stockFile.write(WaitElement.xpath(ElementManager.table1).getAttribute("innerHTML"));
-                    stockFile.newLine();
                     stockFile.write(WaitElement.xpath(ElementManager.table2).getAttribute("innerHTML"));
-                    stockFile.newLine();
                     stockFile.write(WaitElement.xpath(ElementManager.table3).getAttribute("innerHTML"));
-                    stockFile.newLine();
                     stockFile.write(WaitElement.xpath(ElementManager.table4).getAttribute("innerHTML"));
-                    stockFile.newLine();
                 }
             }
             stockFile.close();
             int totalDealRecords = (Integer.parseInt(totalPages) - 1) * 144 + lastPageElementsList.size();
-            if ((Files.lines(Paths.get(stockWriteTo)).count() != totalDealRecords) || totalDealRecords == 0) {
+            if ((Files.lines(Paths.get(stockWriteTo)).count() < totalDealRecords * 6) || totalDealRecords == 0) {
                 logFile.write(", 下载数据不全,文件已删除？？？？");
                 File f = new File(stockWriteTo);
                 boolean result = f.delete();//判断是否删除完毕
