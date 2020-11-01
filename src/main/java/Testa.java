@@ -7,7 +7,10 @@ import java.io.*;
 
 public class Testa {
     public static void main(String[] args) throws IOException {
-
+        DriverDataSource.getDriver().get("http://quote.eastmoney.com/f1.html?code=601998&market=1");
+        WaitElement.xpath(ElementManager.lastRecordTable1);
+        String innerHTML = WaitElement.xpath(ElementManager.table1).getAttribute("innerHTML");
+        System.out.println(innerHTML);
     }
 
     @Test

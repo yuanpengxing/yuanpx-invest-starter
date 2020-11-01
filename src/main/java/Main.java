@@ -1,5 +1,6 @@
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebElement;
 
 import java.io.*;
@@ -14,34 +15,33 @@ public class Main {
 
     public static void main(String[] args) throws IOException, ParseException {
         Map<String, String> cmdLineParamsMap = CommandLineUtils.parserCommandLine(args);
-        if (!cmdLineParamsMap.containsKey("selfSelectStock") || !cmdLineParamsMap.containsKey("rootLocDataWriteTo")
+        if (!cmdLineParamsMap.containsKey("selfSelectStock") || !cmdLineParamsMap.containsKey("dataRootLoc")
                 || !cmdLineParamsMap.containsKey("dataYear") || !cmdLineParamsMap.containsKey("dataMonth")
                 || !cmdLineParamsMap.containsKey("dataDay")) {
             throw new RuntimeException("usage example: java -jar yuanpx-invest-starter.jar " +
-                    "-s D:\\StockData\\SelfSelectStock.txt -l D:\\StockData\\data\\ " +
-                    "-y 2020 -m 10 -d 01");
+                    "-s D:\\stockcode.txt -l D:\\StockData\\data\\ -y 2020 -m 10 -d 01");
         }
-        String dirDataWriteTo = cmdLineParamsMap.get("rootLocDataWriteTo") + "/" + cmdLineParamsMap.get("dataYear") + "/"
+        String dataParent = cmdLineParamsMap.get("dataRootLoc") + "/" + cmdLineParamsMap.get("dataYear") + "/"
                 + cmdLineParamsMap.get("dataMonth") + "/" + cmdLineParamsMap.get("dataDay");
-        File dataParentFile = new File(dirDataWriteTo);
-        if (!dataParentFile.exists()) {
-            dataParentFile.mkdirs();
+        File dp = new File(dataParent);
+        if (!dp.exists()) {
+            dp.mkdirs();
         }
 
         for (int i = 0; i < 10; i++) {
-            BufferedWriter logFile = new BufferedWriter(new FileWriter(dirDataWriteTo + "/log.txt", true));
+            BufferedWriter logFile = new BufferedWriter(new FileWriter(dataParent + "/log.txt", true));
             BufferedReader br = new BufferedReader(new FileReader(cmdLineParamsMap.get("selfSelectStock")));
             String line;
             while ((line = br.readLine()) != null) {
                 String stockCode = line.trim();
                 boolean isStockExist = false;
                 String[] extensions = {"txt"};
-                for (File file : FileUtils.listFiles(new File(dirDataWriteTo), extensions, false)) {
+                for (File file : FileUtils.listFiles(new File(dataParent), extensions, false)) {
                     if (file.getName().equals(stockCode + ".txt")) {
                         isStockExist = true;
                     }
                 }
-                String stockWriteTo = dirDataWriteTo + "/" + stockCode + ".txt";
+                String stockWriteTo = dataParent + "/" + stockCode + ".txt";
                 if (!isStockExist) {
                     logFile.write("Stock " + stockCode + " task start " + new Date());
                     Main.startCollectData(stockCode, stockWriteTo, logFile);
@@ -63,18 +63,22 @@ public class Main {
                 DriverDataSource.getDriver().get("http://quote.eastmoney.com/f1.html?code=" + stockCode + "&market=2");
             }
             String lastRecordTable1 = WaitElement.xpath(ElementManager.lastRecordTable1).getText().trim();
-            stockFile.write(WaitElement.xpath(ElementManager.table1).getText());
+//            stockFile.write(WaitElement.xpath(ElementManager.table1).getText());
+            stockFile.write(WaitElement.xpath(ElementManager.table1).getAttribute("innerHTML"));
             stockFile.newLine();
-            stockFile.write(WaitElement.xpath(ElementManager.table2).getText());
+//            stockFile.write(WaitElement.xpath(ElementManager.table2).getText());
+            stockFile.write(WaitElement.xpath(ElementManager.table2).getAttribute("innerHTML"));
             stockFile.newLine();
-            stockFile.write(WaitElement.xpath(ElementManager.table3).getText());
+//            stockFile.write(WaitElement.xpath(ElementManager.table3).getText());
+            stockFile.write(WaitElement.xpath(ElementManager.table3).getAttribute("innerHTML"));
             stockFile.newLine();
-            stockFile.write(WaitElement.xpath(ElementManager.table4).getText());
+//            stockFile.write(WaitElement.xpath(ElementManager.table4).getText());
+            stockFile.write(WaitElement.xpath(ElementManager.table4).getAttribute("innerHTML"));
             stockFile.newLine();
 
             String totalPages = WaitElement.xpath(ElementManager.totalPages).getText();
-            List<WebElement> lastPageElementsList = new ArrayList<>();
             logFile.write(", TotalPages: " + totalPages);
+            List<WebElement> lastPageElementsList = new ArrayList<>();
             for (int i = 2; i < Integer.parseInt(totalPages) + 1; i++) {
                 WaitElement.xpath(ElementManager.pageInput).sendKeys(i + "");
                 WaitElement.xpath(ElementManager.goBtn).click();
@@ -96,17 +100,18 @@ public class Main {
                 if (i == Integer.parseInt(totalPages)) {
                     lastPageElementsList = WaitElement.getElements(ElementManager.everyDealRecord);
                     for (WebElement element : lastPageElementsList) {
-                        stockFile.write(element.getText());
+//                        stockFile.write(element.getText());
+                        stockFile.write(element.getAttribute("innerHTML"));
                         stockFile.newLine();
                     }
                 } else {
-                    stockFile.write(WaitElement.xpath(ElementManager.table1).getText());
+                    stockFile.write(WaitElement.xpath(ElementManager.table1).getAttribute("innerHTML"));
                     stockFile.newLine();
-                    stockFile.write(WaitElement.xpath(ElementManager.table2).getText());
+                    stockFile.write(WaitElement.xpath(ElementManager.table2).getAttribute("innerHTML"));
                     stockFile.newLine();
-                    stockFile.write(WaitElement.xpath(ElementManager.table3).getText());
+                    stockFile.write(WaitElement.xpath(ElementManager.table3).getAttribute("innerHTML"));
                     stockFile.newLine();
-                    stockFile.write(WaitElement.xpath(ElementManager.table4).getText());
+                    stockFile.write(WaitElement.xpath(ElementManager.table4).getAttribute("innerHTML"));
                     stockFile.newLine();
                 }
             }

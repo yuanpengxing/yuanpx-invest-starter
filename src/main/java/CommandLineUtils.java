@@ -27,7 +27,7 @@ public class CommandLineUtils {
         CommandLineParser parser = new BasicParser();
         Options options = new Options();
         options.addOption("s", "selfSelectStock", true, "self select stock code file path");
-        options.addOption("l", "rootLocDataWriteTo", true, "rootDirDataWriteTo");
+        options.addOption("l", "dataRootLoc", true, "dataRootLoc");
         options.addOption("y", "dataYear", true, "dataYear");
         options.addOption("m", "dataMonth", true, "dataMonth");
         options.addOption("d", "dataDay", true, "dataDay");
@@ -37,7 +37,7 @@ public class CommandLineUtils {
             cmdLineParamsMap.put("selfSelectStock", commandLine.getOptionValue('s'));
         }
         if (commandLine.hasOption('l')) {
-            cmdLineParamsMap.put("rootLocDataWriteTo", commandLine.getOptionValue('l'));
+            cmdLineParamsMap.put("dataRootLoc", commandLine.getOptionValue('l'));
         }
         if (commandLine.hasOption('y')) {
             cmdLineParamsMap.put("dataYear", commandLine.getOptionValue('y'));
