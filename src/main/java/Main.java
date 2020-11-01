@@ -107,7 +107,7 @@ public class Main {
             }
             stockFile.close();
             int totalDealRecords = (Integer.parseInt(totalPages) - 1) * 144 + lastPageElementsList.size();
-            if ((Files.lines(Paths.get(stockWriteTo)).count() < totalDealRecords * 6) || totalDealRecords == 0) {
+            if ((Files.lines(Paths.get(stockWriteTo)).count() != totalDealRecords * 6) || totalDealRecords == 0) {
                 logFile.write(", 下载数据不全,文件已删除？？？？");
                 File f = new File(stockWriteTo);
                 boolean result = f.delete();//判断是否删除完毕
