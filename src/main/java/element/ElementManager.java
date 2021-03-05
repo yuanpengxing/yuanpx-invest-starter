@@ -1,3 +1,5 @@
+package element;
+
 public interface ElementManager {
 
     String totalPages = "//ul[@class='PageNavBtm clearfix']//span[@class='count']";

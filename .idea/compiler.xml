@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="yuanpx-invest-starter" />
+        <module name="invest" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="yuanpx-invest-starter" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

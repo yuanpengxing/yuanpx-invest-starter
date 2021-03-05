@@ -1,3 +1,5 @@
+package libs;
+
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
@@ -23,8 +25,8 @@ public class InitChrome {
         options.addArguments("disable-infobars");
 
         Map<String, Object> prefs = new HashMap<String, Object>();
-        // 配置禁止加载图片，options.addArguments("--disable-images")无效
-        prefs.put("profile.managed_default_content_settings.images", 2);
+//         配置禁止加载图片，options.addArguments("--disable-images")无效
+//        prefs.put("profile.managed_default_content_settings.images", 2);
         prefs.put("credentials_enable_service", false);
         prefs.put("profile.password_manager_enabled", false);
         options.setExperimentalOption("prefs", prefs);

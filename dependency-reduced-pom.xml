@@ -19,9 +19,7 @@
         </executions>
         <configuration>
           <transformers>
-            <transformer>
-              <mainClass>Main</mainClass>
-            </transformer>
+            <transformer />
           </transformers>
         </configuration>
       </plugin>

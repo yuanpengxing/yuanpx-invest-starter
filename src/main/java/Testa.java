@@ -1,6 +1,7 @@
-import org.apache.commons.io.FileUtils;
+import libs.DriverDataSource;
+import element.ElementManager;
+import libs.WaitElement;
 import org.apache.commons.lang3.StringUtils;
-import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 import java.io.*;
@@ -15,8 +16,8 @@ public class Testa {
 
     @Test
     public void generateStockCodeFile() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("D:\\StockData\\Table.txt"));
-        BufferedWriter bw = new BufferedWriter(new FileWriter("D:\\StockData\\NewTable.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("D:\\StockData\\temp.txt"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("D:\\StockData\\stocks.txt"));
         String line;
         while ((line = br.readLine()) != null) {
             if (StringUtils.isNotEmpty(line)) {
